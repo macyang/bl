@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app
+        version="2.5"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <servlet>
+        <servlet-name>input</servlet-name>
+        <servlet-class>com.bluelake.datamodule.GenericInputRequestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>input</servlet-name>
+        <url-pattern>/input</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ingest</servlet-name>
+        <servlet-class>com.bluelake.datamodule.IngestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ingest</servlet-name>
+        <url-pattern>/ingest</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>bqinput</servlet-name>
+        <servlet-class>com.bluelake.datamodule.BqInputRequestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>bqinput</servlet-name>
+        <url-pattern>/bqinput</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>polljob</servlet-name>
+        <servlet-class>com.bluelake.datamodule.PollJobServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>polljob</servlet-name>
+        <url-pattern>/polljob</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>bqingest</servlet-name>
+        <servlet-class>com.bluelake.datamodule.BqIngestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>bqingest</servlet-name>
+        <url-pattern>/bqingest</url-pattern>
+    </servlet-mapping>
+</web-app>
