@@ -125,11 +125,11 @@ public class RingBufferEntity extends RingBuffer {
       entity = datastoreService.get(KeyFactory.createKey(kind, key));
     } catch (EntityNotFoundException e) {
       entity = new Entity(kind, key);
-      setConf(PROP_NUMSLOTS, String.valueOf(size));
-      setConf(PROP_NEXTSLOT, String.valueOf(0));
+      entity.setUnindexedProperty(PROP_NUMSLOTS, String.valueOf(size));
+      entity.setUnindexedProperty(PROP_NEXTSLOT, String.valueOf(0));
     }
-    numSlots = Integer.parseInt(getConf(PROP_NUMSLOTS));
-    nextSlot = Integer.parseInt(getConf(PROP_NEXTSLOT));
+    numSlots = Integer.parseInt((String)entity.getProperty(PROP_NUMSLOTS));
+    nextSlot = Integer.parseInt((String)entity.getProperty(PROP_NEXTSLOT));
     return entity;
   }
 
