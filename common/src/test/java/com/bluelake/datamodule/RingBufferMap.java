@@ -12,8 +12,8 @@ public class RingBufferMap extends RingBuffer {
   public RingBufferMap(int size) {
     numSlots = size;
     nextSlot = 0;
-    setProperty(PROP_NUMSLOTS, String.valueOf(numSlots));
-    setProperty(PROP_NEXTSLOT, String.valueOf(nextSlot));
+    setConf(PROP_NUMSLOTS, String.valueOf(numSlots));
+    setConf(PROP_NEXTSLOT, String.valueOf(nextSlot));
   }
 
   public Map<String, String> getImpl() {
@@ -37,12 +37,12 @@ public class RingBufferMap extends RingBuffer {
   }
   
   @Override
-  public String getProperty(String k) {
+  public String getConf(String k) {
     return (String)map.get(k);
   }
 
   @Override
-  public void setProperty(String k, String v) {
+  public void setConf(String k, String v) {
     map.put(k, v);
   }
 

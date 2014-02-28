@@ -18,7 +18,8 @@ public class GenericInputRequestServlet extends HttpServlet {
   /*
    * Expect the body of the post to be valid JSON
    * 
-   * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+   * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+   * javax.servlet.http.HttpServletResponse)
    */
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     JSONObject jsonObject = GcpUtil.getJSONRequest(req);
@@ -29,9 +30,9 @@ public class GenericInputRequestServlet extends HttpServlet {
     } catch (JSONException e) {
       throw new IOException("error getting query parameter from JSON");
     }
-    
+
     RingBufferEntity ringBuffer = new RingBufferEntity("ringbufferentity", "testkey", 3);
-    ringBuffer.store(data); 
+    ringBuffer.store(data);
     ringBuffer.put();
   }
 }

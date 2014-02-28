@@ -18,7 +18,7 @@ public abstract class RingBuffer implements Iterable<JSONObject> {
     storeDataAt(formatId(nextSlot), data);
     nextSlot = nextId(nextSlot);
     // System.out.println("XXX nextSlot : " + nextSlot);
-    setProperty(PROP_NEXTSLOT, formatId(nextSlot));
+    setConf(PROP_NEXTSLOT, formatId(nextSlot));
   }
 
   @Override
@@ -28,8 +28,8 @@ public abstract class RingBuffer implements Iterable<JSONObject> {
   
   public abstract JSONObject getDataAt(String id);
   public abstract void storeDataAt(String id, JSONObject data);
-  public abstract String getProperty(String k);
-  public abstract void setProperty(String k, String v);
+  public abstract String getConf(String k);
+  public abstract void setConf(String k, String v);
   public abstract boolean hasId(String id);
 
   protected int nextId(int i) {
@@ -40,7 +40,7 @@ public abstract class RingBuffer implements Iterable<JSONObject> {
     return ((i + numSlots - 1) % numSlots);
   }
 
-  private String formatId(int i) {
+  protected String formatId(int i) {
     return String.format("%05d", i);
   }
 
