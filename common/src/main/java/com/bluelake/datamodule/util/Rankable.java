@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datamodule.util;
 
 public interface Rankable extends Comparable<Rankable> {
 

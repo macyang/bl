@@ -25,6 +25,7 @@ import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.bluelake.datamodule.processor.IngestProcessor;
+import com.bluelake.datamodule.util.GcsClassLoader;
 
 public class IngestServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;

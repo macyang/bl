@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datamodule.util;
 
 import java.io.Serializable;
 import java.util.Map;

@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datamodule.util.RingBuffer;
+
 public class RingBufferTest {
 
   @Before

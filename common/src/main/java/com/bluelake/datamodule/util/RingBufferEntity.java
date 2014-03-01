@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datamodule.util;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datamodule.RingBuffer.RingBufferIterator;
+import com.bluelake.datamodule.util.RingBuffer.RingBufferIterator;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Transaction;
 
 public class RingBufferEntity extends RingBuffer {
   private static final Logger LOG = Logger.getLogger(RingBufferEntity.class.getName());
+  private static final int MAX_NUMSLOTS = 250;
   private DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private Entity entity;
   private String kind;
@@ -41,6 +42,10 @@ public class RingBufferEntity extends RingBuffer {
   public RingBufferEntity(String kind, String key, int size) {
     if (size <= 0) {
       throw new IllegalArgumentException("Number of slots must be greater than zero (requested "
+          + size + ")");
+    }
+    if (size > MAX_NUMSLOTS) {
+      throw new IllegalArgumentException("Number of slots must be smaller than " + MAX_NUMSLOTS + " (requested "
           + size + ")");
     }
     this.kind = kind;

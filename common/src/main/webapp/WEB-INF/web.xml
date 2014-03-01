@@ -7,7 +7,7 @@
 
     <servlet>
         <servlet-name>api</servlet-name>
-        <servlet-class>com.bluelake.datamodule.APIServlet</servlet-class>
+        <servlet-class>com.bluelake.datamodule.api.APIServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>api</servlet-name>

@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datamodule.api;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.bluelake.datamodule.util.RingBufferEntity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 

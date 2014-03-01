@@ -6,6 +6,8 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datamodule.util.RingBuffer;
+
 public class RingBufferMap extends RingBuffer {
   private Map<String, String> map = new HashMap<String, String>();
   

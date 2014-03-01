@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datamodule.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

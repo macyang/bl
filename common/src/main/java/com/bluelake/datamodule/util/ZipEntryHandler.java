@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datamodule.util;
 
 import java.io.IOException;
 import java.util.zip.ZipEntry;

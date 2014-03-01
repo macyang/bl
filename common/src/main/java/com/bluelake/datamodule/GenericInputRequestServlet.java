@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datamodule.util.RingBufferEntity;
+
 public class GenericInputRequestServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
   private static final Logger LOG = Logger.getLogger(GenericInputRequestServlet.class.getName());
