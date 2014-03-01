@@ -15,16 +15,16 @@ import com.google.api.services.bigquery.model.JobConfiguration;
 import com.google.api.services.bigquery.model.JobConfigurationQuery;
 import com.google.api.services.bigquery.model.JobReference;
 
-public class BqInputRequestServlet extends HttpServlet {
+public class BqService extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
-  private static final Logger LOG = Logger.getLogger(BqInputRequestServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(BqService.class.getName());
   Bigquery bigquery = GcpUtil.createBQClient();
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     // Start a Query Job
     String querySql =
-        "SELECT imei, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 30";
+        "SELECT imei, devicetime, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 30";
         // "SELECT imei, ltime FROM [motorola.com:science-cluster:dev_devicestats.201402010000] LIMIT 30";
     JobReference jobRef = startQuery(bigquery, GcpUtil.getPROJECT_ID(), querySql);
     GcpUtil.createPollJobTask(GcpUtil.getPROJECT_ID(), jobRef.getJobId(),
@@ -49,11 +49,11 @@ public class BqInputRequestServlet extends HttpServlet {
 
     Insert insert = bigquery.jobs().insert(projectId, job);
     insert.setProjectId(projectId);
-    JobReference jobId = insert.execute().getJobReference();
+    JobReference jobRef = insert.execute().getJobReference();
 
-    LOG.log(Level.INFO, "Job ID of Query Job is: " + jobId.getJobId());
+    LOG.log(Level.INFO, "Job ID of Query Job is: " + jobRef.getJobId());
 
-    return jobId;
+    return jobRef;
   }
 
 }

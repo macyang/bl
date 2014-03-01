@@ -34,7 +34,7 @@
 
     <servlet>
         <servlet-name>bqinput</servlet-name>
-        <servlet-class>com.bluelake.datamodule.BqInputRequestServlet</servlet-class>
+        <servlet-class>com.bluelake.datamodule.BqService</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>bqinput</servlet-name>

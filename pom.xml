@@ -23,7 +23,7 @@
             <id>default</id>
             <modules>
                 <module>processor</module>
-                <module>common</module>
+                <module>plugboard</module>
                 <module>udf</module>
             </modules>
             <activation>
@@ -31,4 +31,18 @@
             </activation>
         </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>repo</id>
+      <releases>
+	<enabled>true</enabled>
+	<checksumPolicy>ignore</checksumPolicy>
+      </releases>
+      <snapshots>
+	<enabled>false</enabled>
+      </snapshots>
+      <url>file://${project.basedir}/repo</url>
+    </repository>
+  </repositories>
 </project>

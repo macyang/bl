@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bluelake.datamodule.processor.IngestProcessor;
+import com.bluelake.datamodule.udf.TestUdf;
 import com.bluelake.datamodule.util.GcsClassLoader;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
@@ -110,7 +111,8 @@ public class BqIngestServlet extends HttpServlet {
                 + (String) ((TableCell) (fields.get(i))).getV());
           }
 
-          Entity entity = ingestProcessor.processRecord(entityKeyArray, jsonObj);
+          TestUdf.processRecord(entityKeyArray, jsonObj);
+          // Entity entity = ingestProcessor.processRecord(entityKeyArray, jsonObj);
           // datastoreService.put(entity);
         } catch (JSONException je) {
           LOG.log(Level.SEVERE, je.getMessage(), je);
