@@ -33,15 +33,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>bqinput</servlet-name>
-        <servlet-class>com.bluelake.datamodule.BqService</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>bqinput</servlet-name>
-        <url-pattern>/bqinput</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>polljob</servlet-name>
         <servlet-class>com.bluelake.datamodule.PollJobServlet</servlet-class>
     </servlet>

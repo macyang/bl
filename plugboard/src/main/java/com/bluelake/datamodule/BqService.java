@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,16 +14,11 @@ import com.google.api.services.bigquery.model.JobConfiguration;
 import com.google.api.services.bigquery.model.JobConfigurationQuery;
 import com.google.api.services.bigquery.model.JobReference;
 
-public class BqService extends HttpServlet {
+public class BqService {
   static final long serialVersionUID = 1234567890l;
   private static final Logger LOG = Logger.getLogger(BqService.class.getName());
-
-  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
-        //"SELECT imei, devicetime, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 30";
-        // "SELECT imei, ltime FROM [motorola.com:science-cluster:dev_devicestats.201402010000] LIMIT 30";
-    resp.setStatus(HttpServletResponse.SC_OK);
-  }
+  
+  private BqService() {}
 
   /**
    * Inserts a Query Job for a particular query
