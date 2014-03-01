@@ -7,52 +7,64 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.api.services.bigquery.Bigquery;
-import com.google.api.services.bigquery.model.JobReference;
-
 public class Jobs {
+
   private static final Logger LOG = Logger.getLogger(BqService.class.getName());
-  public static final String ID = "id";
-  public static final String QUERY = "query";
-  public static final String GCSFILES = "files";
-  public static final String KIND = "kind";
+
+  public static final String FIELD_KIND = "kind";
   public static final String RESOURCE_JOB = "bluelake#job";
-  private static Bigquery bigquery = GcpUtil.createBQClient();
+  public static final String FIELD_ID = "id";
+
+  public static final String FIELD_BQ = "bq";
+  public static final String BQ_QUERY = "query";
+  public static final String BQ_SPLIT = "split";
+  public static final String BQ_PROJECTID = "projectId";
+  public static final String BQ_JOBID = "jobId";
+
+  public static final String FIELD_STATUS = "status";
+  public static final String STATUS_STATE = "state";
+
+  public static final String FIELD_GCS = "gcs";
+
 
   /**
    * Insert a new job, if successful, returns the id for the job
    * 
-   * @param jsonObject
+   * @param jobObj
    * @return
    */
-  public static JSONObject insert(JSONObject jsonObject) {
-    if (jsonObject.has(QUERY)) {
+  public static JSONObject insert(JSONObject jobObj) {
+
+    if (jobObj.has(FIELD_BQ)) {
       try {
-        String querySql = jsonObject.getString(QUERY);
-        JobReference jobRef = BqService.startQuery(bigquery, GcpUtil.getPROJECT_ID(), querySql);
-        GcpUtil.createPollJobTask(GcpUtil.getPROJECT_ID(), jobRef.getJobId(),
-            System.currentTimeMillis());
-        return jobInsertedStatus();
+        JSONObject queryObj = jobObj.getJSONObject(FIELD_BQ);
+        BqService.startQuery(queryObj);
+        GcpUtil.createPollJobTask(jobObj, System.currentTimeMillis());
+        return jobStatus("TODO: return job id here");
       } catch (JSONException e) {
         LOG.log(Level.SEVERE, e.getMessage(), e);
       } catch (IOException e) {
         LOG.log(Level.SEVERE, e.getMessage(), e);
       }
-    }
-    else if (jsonObject.has(GCSFILES)) {
-      
+    } else if (jobObj.has(FIELD_GCS)) {
+
     }
     return null;
   }
-  
-  private static JSONObject jobInsertedStatus() {
+
+  private static JSONObject jobStatus(String jobId) {
+
+    JSONObject ret = new JSONObject();
     JSONObject status = new JSONObject();
+
     try {
-      status.put(ID, "FIX THIS");
+      status.put(STATUS_STATE, "running");
+      ret.put(FIELD_ID, jobId);
+      ret.put(FIELD_STATUS, status);
     } catch (JSONException e) {
       LOG.log(Level.SEVERE, e.getMessage(), e);
     }
-    return status;
+    return ret;
   }
 
 }

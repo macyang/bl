@@ -22,9 +22,6 @@ import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 
 public class BqIngestServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
@@ -32,26 +29,26 @@ public class BqIngestServlet extends HttpServlet {
   Bigquery bigquery = GcpUtil.createBQClient();
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String projectId = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_PROJECTID);
-    String jobId = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_JOBID);
-    String entityKey = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
-    String startIndexS = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX);
-    String pageSizeS = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_PAGESIZE);
 
-    if (startIndexS != null) {
-      long pageSize;
-      if (pageSizeS != null) {
-        pageSize = Long.parseLong(pageSizeS);
-      } else {
-        pageSize = DataModuleConstants.GCS_SPLITSIZE;
+    try {
+      String jobObjS = req.getParameter(DataModuleConstants.JOBOBJECT);
+      JSONObject jobObj = new JSONObject(jobObjS);
+      JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
+      String projectId = bqObj.getString(Jobs.BQ_PROJECTID);
+      String jobId = bqObj.getString(Jobs.BQ_JOBID);
+      int splitSize = bqObj.getInt(Jobs.BQ_SPLIT);
+      String entityKey = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
+      String startIndexS = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX);
+
+      if (startIndexS != null) {
+        LOG.log(Level.INFO, "startIndex: " + startIndexS);
+        LOG.log(Level.INFO, "pageSize: " + splitSize);
+
+        ingestQueryResultToDS(projectId, jobId, "", startIndexS, splitSize);
+        resp.setStatus(HttpServletResponse.SC_OK);
       }
-
-      LOG.log(Level.INFO, "startIndex: " + startIndexS);
-      LOG.log(Level.INFO, "pageSize: " + pageSize);
-
-      ingestQueryResultToDS(projectId, jobId, "", startIndexS, pageSize);
-
-      resp.setStatus(HttpServletResponse.SC_OK);
+    } catch (JSONException je) {
+      LOG.log(Level.SEVERE, je.getMessage(), je);
     }
   }
 
@@ -73,9 +70,9 @@ public class BqIngestServlet extends HttpServlet {
     TableFieldSchema[] fieldSchemaArray =
         fieldSchema.toArray(new TableFieldSchema[fieldSchema.size()]);
 
-    // for (int i = 0; i < fieldSchema.size(); i++) {
-    // LOG.log(Level.INFO, "fieldSchema[" + i + "]: " + fieldSchemaArray[i].getName());
-    // }
+    for (int i = 0; i < fieldSchema.size(); i++) {
+      LOG.log(Level.FINER, "fieldSchema[" + i + "]: " + fieldSchemaArray[i].getName());
+    }
 
     // load the user defined IngestProcessor
     IngestProcessor ingestProcessor;
@@ -95,22 +92,12 @@ public class BqIngestServlet extends HttpServlet {
       ingestProcessor = new IngestProcessor();
     }
 
-    DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
     List<TableRow> rows = queryResult.getRows();
     if (rows != null) {
       for (TableRow row : rows) {
-        // for (TableCell field : row.getF()) {
-        List<TableCell> fields = row.getF();
-        JSONObject jsonObj = new JSONObject();
-
         try {
-          for (int i = 0; i < fields.size(); i++) {
-            jsonObj.put(fieldSchemaArray[i].getName(),
-                (String) ((TableCell) (fields.get(i))).getV());
-            LOG.log(Level.INFO, fieldSchemaArray[i].getName() + ":"
-                + (String) ((TableCell) (fields.get(i))).getV());
-          }
-
+          // for (TableCell field : row.getF()) {
+          JSONObject jsonObj = bqRowToJSON(row, fieldSchemaArray);
           TestUdf.processRecord(entityKeyArray, jsonObj);
           // Entity entity = ingestProcessor.processRecord(entityKeyArray, jsonObj);
           // datastoreService.put(entity);
@@ -119,5 +106,22 @@ public class BqIngestServlet extends HttpServlet {
         }
       }
     }
+  }
+
+  /*
+   * Direct mapping from a BigQuery TableRow to a JSONObject. The key name is the column name and
+   * the value is the TableCell value casted to String.
+   */
+  private JSONObject bqRowToJSON(TableRow row, TableFieldSchema[] fieldSchemaArray)
+      throws JSONException {
+    List<TableCell> fields = row.getF();
+    JSONObject jsonObj = new JSONObject();
+
+    for (int i = 0; i < fields.size(); i++) {
+      jsonObj.put(fieldSchemaArray[i].getName(), (String) ((TableCell) (fields.get(i))).getV());
+      LOG.log(Level.FINER,
+          fieldSchemaArray[i].getName() + ":" + (String) ((TableCell) (fields.get(i))).getV());
+    }
+    return jsonObj;
   }
 }

@@ -52,7 +52,7 @@ public class APIServlet extends HttpServlet {
     JSONObject jsonReq = GcpUtil.getJSONRequest(req);
     JSONObject jsonResp = null;
     try {
-      String resourceKind = jsonReq.getString(Jobs.KIND);  
+      String resourceKind = jsonReq.getString(Jobs.FIELD_KIND);  
       if (Jobs.RESOURCE_JOB.equalsIgnoreCase(resourceKind)) {
         jsonResp = Jobs.insert(jsonReq);
       }

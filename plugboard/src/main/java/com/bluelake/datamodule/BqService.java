@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.Bigquery.Jobs.Insert;
 import com.google.api.services.bigquery.model.Job;
@@ -18,26 +21,22 @@ import com.google.api.services.bigquery.model.JobReference;
 public class BqService extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
   private static final Logger LOG = Logger.getLogger(BqService.class.getName());
-  Bigquery bigquery = GcpUtil.createBQClient();
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-    // Start a Query Job
-    String querySql =
-        "SELECT imei, devicetime, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 30";
+        //"SELECT imei, devicetime, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 30";
         // "SELECT imei, ltime FROM [motorola.com:science-cluster:dev_devicestats.201402010000] LIMIT 30";
-    JobReference jobRef = startQuery(bigquery, GcpUtil.getPROJECT_ID(), querySql);
-    GcpUtil.createPollJobTask(GcpUtil.getPROJECT_ID(), jobRef.getJobId(),
-        System.currentTimeMillis());
     resp.setStatus(HttpServletResponse.SC_OK);
   }
 
   /**
    * Inserts a Query Job for a particular query
    */
-  public static JobReference startQuery(Bigquery bigquery, String projectId, String querySql)
-      throws IOException {
-    LOG.log(Level.INFO, "Inserting Query Job: " + querySql);
+  public static JobReference startQuery(JSONObject bqObj)
+      throws JSONException, IOException {
+    
+    LOG.log(Level.INFO, "Inserting Query Job: " + bqObj.toString());
+    String querySql = bqObj.getString(Jobs.BQ_QUERY);
 
     Job job = new Job();
     JobConfiguration config = new JobConfiguration();
@@ -47,9 +46,13 @@ public class BqService extends HttpServlet {
     job.setConfiguration(config);
     queryConfig.setQuery(querySql);
 
-    Insert insert = bigquery.jobs().insert(projectId, job);
-    insert.setProjectId(projectId);
+    Bigquery bigquery = GcpUtil.createBQClient();
+    Insert insert = bigquery.jobs().insert(GcpUtil.getPROJECT_ID(), job);
+    insert.setProjectId(GcpUtil.getPROJECT_ID());
     JobReference jobRef = insert.execute().getJobReference();
+    
+    bqObj.put(Jobs.BQ_PROJECTID, jobRef.getProjectId());
+    bqObj.put(Jobs.BQ_JOBID, jobRef.getJobId());
 
     LOG.log(Level.INFO, "Job ID of Query Job is: " + jobRef.getJobId());
 

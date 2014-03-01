@@ -2,7 +2,6 @@ package com.bluelake.datamodule;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +67,7 @@ public class GcpUtil {
     return bigquery;
   }
 
-  public static void createPollJobTask(String projectId, String jobId, long starttime) {
+  public static void createPollJobTask(JSONObject jobObj, long starttime) {
     Queue queue = QueueFactory.getQueue(DataModuleConstants.BQ_QUEUE);
     queue.add(TaskOptions.Builder
         .withUrl(DataModuleConstants.POLLJOB_URL)
@@ -76,12 +75,11 @@ public class GcpUtil {
         // "Host",
         // BackendServiceFactory.getBackendService()
         // .getBackendAddress("ingestbackend"))
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_PROJECTID, projectId)
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_JOBID, jobId)
+        .param(DataModuleConstants.JOBOBJECT, jobObj.toString())
         .param(DataModuleConstants.INGEST_REQUEST_PARAM_STARTTIME, String.valueOf(starttime)));
   }
 
-  public static void createBQSplitTask(String projectId, String jobId, String entityKey,
+  public static void createBQSplitTask(JSONObject jobObj, String entityKey,
       long startIndex) {
     Queue queue = QueueFactory.getQueue(DataModuleConstants.INGEST_QUEUE);
     queue.add(TaskOptions.Builder
@@ -90,8 +88,7 @@ public class GcpUtil {
         // "Host",
         // BackendServiceFactory.getBackendService()
         // .getBackendAddress("ingestbackend"))
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_PROJECTID, projectId)
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_JOBID, jobId)
+        .param(DataModuleConstants.JOBOBJECT, jobObj.toString())
         .param(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY, entityKey)
         .param(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX, String.valueOf(startIndex)));
   }

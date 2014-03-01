@@ -22,6 +22,7 @@ public class DataModuleConstants {
   public static final String INGEST_REQUEST_PARAM_PROJECTID = "projectid";
   public static final String INGEST_REQUEST_PARAM_JOBID = "jobid";
   public static final String INGEST_REQUEST_PARAM_STARTTIME = "starttime";
+  public static final String JOBOBJECT = "jobobj";
 
 
 }
