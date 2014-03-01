@@ -6,7 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <groupId>com.bluelake</groupId>
-    <artifactId>hub</artifactId>
+    <artifactId>plugboard</artifactId>
 
     <pluginRepositories>
       <pluginRepository>

@@ -24,7 +24,8 @@ public class BqInputRequestServlet extends HttpServlet {
 
     // Start a Query Job
     String querySql =
-        "SELECT imei, ltime FROM [motorola.com:science-cluster:dev_devicestats.201402010000] LIMIT 30";
+        "SELECT imei, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 30";
+        // "SELECT imei, ltime FROM [motorola.com:science-cluster:dev_devicestats.201402010000] LIMIT 30";
     JobReference jobRef = startQuery(bigquery, GcpUtil.getPROJECT_ID(), querySql);
     GcpUtil.createPollJobTask(GcpUtil.getPROJECT_ID(), jobRef.getJobId(),
         System.currentTimeMillis());
