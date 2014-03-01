@@ -37,9 +37,7 @@ public class Jobs {
 
     if (jobObj.has(FIELD_BQ)) {
       try {
-        JSONObject queryObj = jobObj.getJSONObject(FIELD_BQ);
-        BqService.startQuery(queryObj);
-        GcpUtil.createPollJobTask(jobObj, System.currentTimeMillis());
+        BqService.insertJob(jobObj);
         return jobStatus("TODO: return job id here");
       } catch (JSONException e) {
         LOG.log(Level.SEVERE, e.getMessage(), e);

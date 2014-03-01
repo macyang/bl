@@ -32,10 +32,11 @@ public class BqService extends HttpServlet {
   /**
    * Inserts a Query Job for a particular query
    */
-  public static JobReference startQuery(JSONObject bqObj)
+  public static JobReference insertJob(JSONObject jobObj)
       throws JSONException, IOException {
     
-    LOG.log(Level.INFO, "Inserting Query Job: " + bqObj.toString());
+    LOG.log(Level.INFO, "Inserting Query Job: " + jobObj.toString());
+    JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
     String querySql = bqObj.getString(Jobs.BQ_QUERY);
 
     Job job = new Job();
@@ -53,6 +54,7 @@ public class BqService extends HttpServlet {
     
     bqObj.put(Jobs.BQ_PROJECTID, jobRef.getProjectId());
     bqObj.put(Jobs.BQ_JOBID, jobRef.getJobId());
+    GcpUtil.createPollJobTask(jobObj, System.currentTimeMillis());
 
     LOG.log(Level.INFO, "Job ID of Query Job is: " + jobRef.getJobId());
 
