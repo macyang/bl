@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 public class DataModuleConstants {
   public static final String PASSPORT_KIND = "passport";

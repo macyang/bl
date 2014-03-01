@@ -7,7 +7,7 @@
 
     <servlet>
         <servlet-name>api</servlet-name>
-        <servlet-class>com.bluelake.datamodule.api.APIServlet</servlet-class>
+        <servlet-class>com.bluelake.datahub.api.APIServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>api</servlet-name>
@@ -16,7 +16,7 @@
 
     <servlet>
         <servlet-name>input</servlet-name>
-        <servlet-class>com.bluelake.datamodule.GenericInputRequestServlet</servlet-class>
+        <servlet-class>com.bluelake.datahub.GenericInputRequestServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>input</servlet-name>
@@ -25,7 +25,7 @@
 
     <servlet>
         <servlet-name>ingest</servlet-name>
-        <servlet-class>com.bluelake.datamodule.IngestServlet</servlet-class>
+        <servlet-class>com.bluelake.datahub.IngestServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ingest</servlet-name>
@@ -34,7 +34,7 @@
 
     <servlet>
         <servlet-name>polljob</servlet-name>
-        <servlet-class>com.bluelake.datamodule.PollJobServlet</servlet-class>
+        <servlet-class>com.bluelake.datahub.PollJobServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>polljob</servlet-name>
@@ -43,7 +43,7 @@
 
     <servlet>
         <servlet-name>bqingest</servlet-name>
-        <servlet-class>com.bluelake.datamodule.BqIngestServlet</servlet-class>
+        <servlet-class>com.bluelake.datahub.BqIngestServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>bqingest</servlet-name>

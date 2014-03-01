@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datamodule.util.RingBuffer;
+import com.bluelake.datahub.util.RingBuffer;
 
 public class RingBufferTest {
 

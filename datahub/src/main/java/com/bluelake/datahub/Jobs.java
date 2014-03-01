@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import java.io.IOException;
 import java.util.logging.Level;

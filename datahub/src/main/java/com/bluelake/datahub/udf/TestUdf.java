@@ -1,4 +1,4 @@
-package com.bluelake.datamodule.udf;
+package com.bluelake.datahub.udf;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datamodule.util.RingBufferEntity;
+import com.bluelake.datahub.util.RingBufferEntity;
 
 public class TestUdf {
   private static final Logger LOG = Logger.getLogger(TestUdf.class.getName());

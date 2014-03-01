@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.Label;

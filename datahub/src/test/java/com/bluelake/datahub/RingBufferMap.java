@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datamodule.util.RingBuffer;
+import com.bluelake.datahub.util.RingBuffer;
 
 public class RingBufferMap extends RingBuffer {
   private Map<String, String> map = new HashMap<String, String>();

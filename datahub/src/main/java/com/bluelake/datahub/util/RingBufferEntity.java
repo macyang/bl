@@ -1,4 +1,4 @@
-package com.bluelake.datamodule.util;
+package com.bluelake.datahub.util;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datamodule.util.RingBuffer.RingBufferIterator;
+import com.bluelake.datahub.util.RingBuffer.RingBufferIterator;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;

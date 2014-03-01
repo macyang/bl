@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datahub.udf.TestUdf;
+import com.bluelake.datahub.util.GcsClassLoader;
 import com.bluelake.datamodule.processor.IngestProcessor;
-import com.bluelake.datamodule.udf.TestUdf;
-import com.bluelake.datamodule.util.GcsClassLoader;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import com.google.api.services.bigquery.model.TableCell;

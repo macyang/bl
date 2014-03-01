@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datamodule.util.RingBufferEntity;
+import com.bluelake.datahub.util.RingBufferEntity;
 
 public class GenericInputRequestServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;

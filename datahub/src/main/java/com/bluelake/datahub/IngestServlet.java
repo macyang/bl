@@ -1,4 +1,4 @@
-package com.bluelake.datamodule;
+package com.bluelake.datahub;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,8 +24,8 @@ import com.google.appengine.tools.cloudstorage.GcsInputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
+import com.bluelake.datahub.util.GcsClassLoader;
 import com.bluelake.datamodule.processor.IngestProcessor;
-import com.bluelake.datamodule.util.GcsClassLoader;
 
 public class IngestServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
