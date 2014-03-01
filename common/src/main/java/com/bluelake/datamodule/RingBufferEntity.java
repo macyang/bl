@@ -2,6 +2,7 @@ package com.bluelake.datamodule;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datamodule.RingBuffer.RingBufferIterator;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -70,6 +72,12 @@ public class RingBufferEntity extends RingBuffer {
       }
     }
   }
+  
+  @Override
+  public Iterator<JSONObject> iterator() {
+    entity = getOrCreateEntity(kind, key, size);
+    return new RingBufferIterator(previousId(nextSlot));
+  }
 
   /*
    * This function is call from the RingBuffer iterator. It fetches all properties from the entity
@@ -82,7 +90,7 @@ public class RingBufferEntity extends RingBuffer {
       cachedProperties = entity.getProperties();
     }
     try {
-      JSONObject result = new JSONObject((String) cachedProperties.get(id));
+      JSONObject result = new JSONObject((String) ((Text)cachedProperties.get(id)).getValue());
       return result;
     } catch (JSONException e) {
       LOG.log(Level.SEVERE, e.getMessage(), e);

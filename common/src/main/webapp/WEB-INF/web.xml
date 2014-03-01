@@ -6,6 +6,15 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
     <servlet>
+        <servlet-name>api</servlet-name>
+        <servlet-class>com.bluelake.datamodule.APIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/testmodule/v1beta1/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>input</servlet-name>
         <servlet-class>com.bluelake.datamodule.GenericInputRequestServlet</servlet-class>
     </servlet>
