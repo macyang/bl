@@ -39,7 +39,7 @@
   <dependencies>
     <dependency>
         <groupId>com.bluelake</groupId>
-        <artifactId>plugboard</artifactId>
+        <artifactId>datahub</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>

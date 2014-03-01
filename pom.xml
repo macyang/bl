@@ -23,7 +23,7 @@
             <id>default</id>
             <modules>
                 <module>processor</module>
-                <module>plugboard</module>
+                <module>datahub</module>
                 <module>udf</module>
             </modules>
             <activation>
