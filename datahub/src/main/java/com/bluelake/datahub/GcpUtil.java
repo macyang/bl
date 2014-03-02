@@ -68,29 +68,29 @@ public class GcpUtil {
   }
 
   public static void createPollJobTask(JSONObject jobObj, long starttime) {
-    Queue queue = QueueFactory.getQueue(DataModuleConstants.BQ_QUEUE);
+    Queue queue = QueueFactory.getQueue(DataHubConstants.BQ_QUEUE);
     queue.add(TaskOptions.Builder
-        .withUrl(DataModuleConstants.POLLJOB_URL)
+        .withUrl(DataHubConstants.POLLJOB_URL)
         // .header(
         // "Host",
         // BackendServiceFactory.getBackendService()
         // .getBackendAddress("ingestbackend"))
-        .param(DataModuleConstants.JOBOBJECT, jobObj.toString())
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_STARTTIME, String.valueOf(starttime)));
+        .param(DataHubConstants.JOBOBJECT, jobObj.toString())
+        .param(DataHubConstants.INGEST_REQUEST_PARAM_STARTTIME, String.valueOf(starttime)));
   }
 
   public static void createBQSplitTask(JSONObject jobObj, String entityKey,
       long startIndex) {
-    Queue queue = QueueFactory.getQueue(DataModuleConstants.INGEST_QUEUE);
+    Queue queue = QueueFactory.getQueue(DataHubConstants.INGEST_QUEUE);
     queue.add(TaskOptions.Builder
-        .withUrl(DataModuleConstants.BQINGEST_URL)
+        .withUrl(DataHubConstants.BQINGEST_URL)
         // .header(
         // "Host",
         // BackendServiceFactory.getBackendService()
         // .getBackendAddress("ingestbackend"))
-        .param(DataModuleConstants.JOBOBJECT, jobObj.toString())
-        .param(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY, entityKey)
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX, String.valueOf(startIndex)));
+        .param(DataHubConstants.JOBOBJECT, jobObj.toString())
+        .param(DataHubConstants.INPUT_REQUEST_PARAM_ENTITYKEY, entityKey)
+        .param(DataHubConstants.INGEST_REQUEST_PARAM_STARTINDEX, String.valueOf(startIndex)));
   }
 
   public static JSONObject getJSONRequest(HttpServletRequest request) throws IOException {

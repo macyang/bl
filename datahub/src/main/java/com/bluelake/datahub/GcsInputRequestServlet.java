@@ -32,9 +32,9 @@ public class GcsInputRequestServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(GcsInputRequestServlet.class.getName());
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String bucketName = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_BUCKET);
-    String gcsObjectNames = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_GCSOBJS);
-    String entityKey = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
+    String bucketName = req.getParameter(DataHubConstants.INPUT_REQUEST_PARAM_BUCKET);
+    String gcsObjectNames = req.getParameter(DataHubConstants.INPUT_REQUEST_PARAM_GCSOBJS);
+    String entityKey = req.getParameter(DataHubConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
 
     /*
      * Provide default values for input parameters
@@ -81,7 +81,7 @@ public class GcsInputRequestServlet extends HttpServlet {
 
         if (entityCount > 0) {
           // create one task for every GCS_SPLITSIZE number of records
-          for (long l = 1; l <= entityCount; l += DataModuleConstants.GCS_SPLITSIZE) {
+          for (long l = 1; l <= entityCount; l += DataHubConstants.GCS_SPLITSIZE) {
             //createGcsSplitTask(bucketName, gcsObjectName, entityKey, l);
             createGcsSplitMessage(bucketName, gcsObjectName, entityKey, l);
             /*
@@ -101,17 +101,17 @@ public class GcsInputRequestServlet extends HttpServlet {
 
   private void createGcsSplitTask(String bucketName, String gcsObjectName, String entityKey,
       long l) {
-    Queue queue = QueueFactory.getQueue(DataModuleConstants.INGEST_QUEUE);
+    Queue queue = QueueFactory.getQueue(DataHubConstants.INGEST_QUEUE);
     queue.add(TaskOptions.Builder
-        .withUrl(DataModuleConstants.GCSINGEST_URL)
+        .withUrl(DataHubConstants.GCSINGEST_URL)
         //.header(
         //    "Host",
         //    BackendServiceFactory.getBackendService()
         //        .getBackendAddress("ingestbackend"))
-        .param(DataModuleConstants.INPUT_REQUEST_PARAM_BUCKET, bucketName)
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_GCSOBJ, gcsObjectName)
-        .param(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY, entityKey)
-        .param(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX,
+        .param(DataHubConstants.INPUT_REQUEST_PARAM_BUCKET, bucketName)
+        .param(DataHubConstants.INGEST_REQUEST_PARAM_GCSOBJ, gcsObjectName)
+        .param(DataHubConstants.INPUT_REQUEST_PARAM_ENTITYKEY, entityKey)
+        .param(DataHubConstants.INGEST_REQUEST_PARAM_STARTINDEX,
             String.valueOf(l)));
   }
   

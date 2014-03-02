@@ -32,12 +32,12 @@ public class IngestServlet extends HttpServlet {
   private static final Logger LOG = Logger.getLogger(IngestServlet.class.getName());
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String bucketName = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_BUCKET);
-    String gcsObjectName = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_GCSOBJ);
-    String entityKey = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
+    String bucketName = req.getParameter(DataHubConstants.INPUT_REQUEST_PARAM_BUCKET);
+    String gcsObjectName = req.getParameter(DataHubConstants.INGEST_REQUEST_PARAM_GCSOBJ);
+    String entityKey = req.getParameter(DataHubConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
     String startPositionS =
-        req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX);
-    String pageSizeS = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_PAGESIZE);
+        req.getParameter(DataHubConstants.INGEST_REQUEST_PARAM_STARTINDEX);
+    String pageSizeS = req.getParameter(DataHubConstants.INGEST_REQUEST_PARAM_PAGESIZE);
 
     if (startPositionS != null) {
       long startPosition;
@@ -47,7 +47,7 @@ public class IngestServlet extends HttpServlet {
         if (pageSizeS != null) {
           pageSize = Long.parseLong(pageSizeS);
         } else {
-          pageSize = DataModuleConstants.GCS_SPLITSIZE;
+          pageSize = DataHubConstants.GCS_SPLITSIZE;
         }
         startPosition = Long.parseLong(startPositionS);
         ingestGCSToDS(bucketName, gcsObjectName, entityKey, startPosition, pageSize);

@@ -26,12 +26,12 @@ public class PollJobServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     try {
-      String jobObjS = req.getParameter(DataModuleConstants.JOBOBJECT);
+      String jobObjS = req.getParameter(DataHubConstants.JOBOBJECT);
       JSONObject jobObj = new JSONObject(jobObjS);
       JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
       String projectId = bqObj.getString(Jobs.BQ_PROJECTID);
       String jobId = bqObj.getString(Jobs.BQ_JOBID);
-      int splitSize = bqObj.getInt(Jobs.BQ_SPLIT);
+      long splitSize = bqObj.getLong(Jobs.BQ_SPLIT);
 
       Job pollJob = bigquery.jobs().get(projectId, jobId).execute();
       if (pollJob.getStatus().getState().equals("DONE")) {

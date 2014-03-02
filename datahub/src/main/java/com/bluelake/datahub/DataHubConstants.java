@@ -1,6 +1,6 @@
 package com.bluelake.datahub;
 
-public class DataModuleConstants {
+public class DataHubConstants {
   public static final String PASSPORT_KIND = "passport";
   public static final String ENTITY_KIND = "entity";
   public static final String INGEST_QUEUE = "ingestqueue";

@@ -13,9 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datahub.udf.DefaultTableSplitUdf;
 import com.bluelake.datahub.udf.TestUdf;
-import com.bluelake.datahub.util.GcsClassLoader;
-import com.bluelake.datahub.udf.IngestProcessor;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import com.google.api.services.bigquery.model.TableCell;
@@ -31,20 +30,26 @@ public class BqIngestServlet extends HttpServlet {
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
     try {
-      String jobObjS = req.getParameter(DataModuleConstants.JOBOBJECT);
+      String jobObjS = req.getParameter(DataHubConstants.JOBOBJECT);
       JSONObject jobObj = new JSONObject(jobObjS);
       JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
       String projectId = bqObj.getString(Jobs.BQ_PROJECTID);
       String jobId = bqObj.getString(Jobs.BQ_JOBID);
-      int splitSize = bqObj.getInt(Jobs.BQ_SPLIT);
-      String entityKey = req.getParameter(DataModuleConstants.INPUT_REQUEST_PARAM_ENTITYKEY);
-      String startIndexS = req.getParameter(DataModuleConstants.INGEST_REQUEST_PARAM_STARTINDEX);
+      long splitSize = bqObj.getLong(Jobs.BQ_SPLIT);
+      String startIndexS = req.getParameter(DataHubConstants.INGEST_REQUEST_PARAM_STARTINDEX);
 
       if (startIndexS != null) {
         LOG.log(Level.INFO, "startIndex: " + startIndexS);
-        LOG.log(Level.INFO, "pageSize: " + splitSize);
-
-        ingestQueryResultToDS(projectId, jobId, "", startIndexS, splitSize);
+        LOG.log(Level.INFO, "splitSize: " + splitSize);
+        
+        GetQueryResultsResponse queryResult =
+            bigquery.jobs().getQueryResults(projectId, jobId)
+                .setStartIndex(new BigInteger(startIndexS))
+                .setMaxResults(splitSize).execute();
+        
+        DefaultTableSplitUdf tableSplitUdf = new DefaultTableSplitUdf();
+        tableSplitUdf.processTableSplit(queryResult);
+        
         resp.setStatus(HttpServletResponse.SC_OK);
       }
     } catch (JSONException je) {
@@ -54,9 +59,6 @@ public class BqIngestServlet extends HttpServlet {
 
   private void ingestQueryResultToDS(String projectId, String jobId, String entityKey,
       String startIndexS, long splitSize) throws IOException {
-    LOG.log(Level.INFO, "start processing");
-    LOG.log(Level.INFO, "bq job: " + projectId + "/" + jobId);
-    LOG.log(Level.INFO, "startIndex: " + startIndexS);
 
     String[] entityKeyArray = entityKey.split(",");
 
@@ -67,12 +69,13 @@ public class BqIngestServlet extends HttpServlet {
 
     TableSchema tableSchema = queryResult.getSchema();
     List<TableFieldSchema> fieldSchema = tableSchema.getFields();
-    TableFieldSchema[] fieldSchemaArray =
-        fieldSchema.toArray(new TableFieldSchema[fieldSchema.size()]);
-
-    for (int i = 0; i < fieldSchema.size(); i++) {
-      LOG.log(Level.FINER, "fieldSchema[" + i + "]: " + fieldSchemaArray[i].getName());
-    }
+    
+//    TableFieldSchema[] fieldSchemaArray =
+//        fieldSchema.toArray(new TableFieldSchema[fieldSchema.size()]);
+//
+//    for (int i = 0; i < fieldSchema.size(); i++) {
+//      LOG.log(Level.FINER, "fieldSchema[" + i + "]: " + fieldSchemaArray[i].getName());
+//    }
 
     // load the user defined IngestProcessor
 //    IngestProcessor ingestProcessor;
@@ -94,17 +97,16 @@ public class BqIngestServlet extends HttpServlet {
 
     List<TableRow> rows = queryResult.getRows();
     if (rows != null) {
+      LOG.log(Level.INFO, "start processing table rows");
       for (TableRow row : rows) {
         try {
-          // for (TableCell field : row.getF()) {
-          JSONObject jsonObj = bqRowToJSON(row, fieldSchemaArray);
+          JSONObject jsonObj = bqRowToJSON(row, fieldSchema);
           TestUdf.processRecord(entityKeyArray, jsonObj);
-          // Entity entity = ingestProcessor.processRecord(entityKeyArray, jsonObj);
-          // datastoreService.put(entity);
         } catch (JSONException je) {
           LOG.log(Level.SEVERE, je.getMessage(), je);
         }
       }
+      LOG.log(Level.INFO, "done processing table rows");
     }
   }
 
@@ -112,15 +114,15 @@ public class BqIngestServlet extends HttpServlet {
    * Direct mapping from a BigQuery TableRow to a JSONObject. The key name is the column name and
    * the value is the TableCell value casted to String.
    */
-  private JSONObject bqRowToJSON(TableRow row, TableFieldSchema[] fieldSchemaArray)
+  private JSONObject bqRowToJSON(TableRow row, List<TableFieldSchema> fieldSchema)
       throws JSONException {
     List<TableCell> fields = row.getF();
     JSONObject jsonObj = new JSONObject();
 
     for (int i = 0; i < fields.size(); i++) {
-      jsonObj.put(fieldSchemaArray[i].getName(), (String) ((TableCell) (fields.get(i))).getV());
+      jsonObj.put(fieldSchema.get(i).getName(), (String) ((TableCell) (fields.get(i))).getV());
       LOG.log(Level.FINER,
-          fieldSchemaArray[i].getName() + ":" + (String) ((TableCell) (fields.get(i))).getV());
+          fieldSchema.get(i).getName() + ":" + (String) ((TableCell) (fields.get(i))).getV());
     }
     return jsonObj;
   }
