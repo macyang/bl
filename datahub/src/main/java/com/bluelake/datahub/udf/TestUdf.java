@@ -8,18 +8,20 @@ import org.json.JSONObject;
 
 import com.bluelake.datahub.util.RingBufferEntity;
 
-public class TestUdf {
+public class TestUdf extends DefaultTableSplitUdf {
   private static final Logger LOG = Logger.getLogger(TestUdf.class.getName());
 
-  public static void processRecord(String[] entityKeyArray, JSONObject jsonObj) throws JSONException {
-    String imei = jsonObj.getString("imei");
-    String devicetime = jsonObj.getString("devicetime");
-    String event = jsonObj.getString("event");
-    RingBufferEntity ringBuffer = new RingBufferEntity("batterysummary", imei, 10);
+  @Override
+  protected void processTableRow(JSONObject rowObj) throws JSONException {
+    String imei = rowObj.getString("imei");
+    String devicetime = rowObj.getString("devicetime");
+    String event = rowObj.getString("event");
+    RingBufferEntity ringBuffer = new RingBufferEntity(getEntityKind(), imei, 10);
     try {
       JSONObject obj = new JSONObject(event);
       obj.remove("ID");
-      obj.put("devicetime", devicetime);
+      // use a strange property name for devicetime
+      obj.put("testudfdt", devicetime);
       ringBuffer.store(obj);
       ringBuffer.put();
     } catch (JSONException je) {

@@ -1,0 +1,9 @@
+{
+  "kind":"bluelake#job",
+  "bq":{
+    "query":"SELECT imei, devicetime, event FROM [motorola.com:datasystems:mac.bt_discharge_summary] LIMIT 10000",
+    "split":1000,
+    "splitudf":"com.bluelake.myapp.MyProcessor",
+    "entitykind":"myappkind"
+  }
+}

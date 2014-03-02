@@ -1,4 +1,11 @@
-appengine-skeleton
+MyApp
 =============================
 
-This is a generated application from the appengine-skeleton archetype.
+This is an example BlueLake DataHub application.
+
+To deploy the application,
+% cd myapp-ear
+% mvn appengine:update
+
+To test the application,
+% curl -X POST -d @example/job.json http://<appname>.appspot.com/datahub/v1beta1/jobs

@@ -11,7 +11,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>api</servlet-name>
-        <url-pattern>/testmodule/v1beta1/*</url-pattern>
+        <url-pattern>/datahub/v1beta1/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

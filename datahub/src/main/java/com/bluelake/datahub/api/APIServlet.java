@@ -59,7 +59,8 @@ public class APIServlet extends HttpServlet {
       resp.setContentType("application/json");
       resp.getWriter().print(jsonResp.toString());
       resp.setStatus(HttpServletResponse.SC_OK);
-    } catch (JSONException je) {
+    } catch (JSONException e) {
+      LOG.log(Level.SEVERE, e.getMessage(), e);
       throw new IOException("Malformed request");
     }
   }

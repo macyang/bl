@@ -1,9 +1,0 @@
-<backends>
-  <backend name="ingestbackend">
-    <class>B2</class>
-    <instances>32</instances>
-    <options>
-      <dynamic>true</dynamic>
-    </options>
-  </backend>
-</backends>

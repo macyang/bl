@@ -20,6 +20,8 @@ public class Jobs {
   public static final String BQ_SPLIT = "split";
   public static final String BQ_PROJECTID = "projectId";
   public static final String BQ_JOBID = "jobId";
+  public static final String BQ_TABLESPLITUDF = "splitudf";
+  public static final String BQ_ENTITYKIND = "entitykind";
 
   public static final String FIELD_STATUS = "status";
   public static final String STATUS_STATE = "state";

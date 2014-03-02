@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datahub.BqIngestServlet;
 import com.bluelake.datahub.BqService;
+import com.bluelake.datahub.Jobs;
 import com.bluelake.datahub.util.RingBufferEntity;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import com.google.api.services.bigquery.model.TableFieldSchema;
@@ -17,7 +17,20 @@ import com.google.api.services.bigquery.model.TableSchema;
 
 public class DefaultTableSplitUdf implements TableSplitUdf {
   
-  private static final Logger LOG = Logger.getLogger(BqIngestServlet.class.getName());
+  private static final Logger LOG = Logger.getLogger(DefaultTableSplitUdf.class.getName());
+  
+  private String entityKind = "dfaultentitykind";
+  
+  @Override
+  public void init(JSONObject jobObj) {
+    
+    try {
+      JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
+      entityKind = bqObj.getString(Jobs.BQ_ENTITYKIND);
+    } catch (JSONException e) {
+      LOG.log(Level.INFO, e.getMessage(), e);
+    }
+  }
   
   @Override
   public final void processTableSplit(GetQueryResultsResponse queryResult) {
@@ -43,7 +56,7 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
     String imei = rowObj.getString("imei");
     String devicetime = rowObj.getString("devicetime");
     String event = rowObj.getString("event");
-    RingBufferEntity ringBuffer = new RingBufferEntity("batterysummary", imei, 10);
+    RingBufferEntity ringBuffer = new RingBufferEntity(getEntityKind(), imei, 10);
     try {
       JSONObject obj = new JSONObject(event);
       obj.remove("ID");
@@ -53,6 +66,10 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
     } catch (JSONException je) {
       LOG.log(Level.SEVERE, je.getMessage(), je);
     }
+  }
+  
+  protected final String getEntityKind() {
+    return entityKind;
   }
 
 }
