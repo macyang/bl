@@ -17,14 +17,14 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 
 public class DefaultTableSplitUdf implements TableSplitUdf {
-  
+
   private static final Logger LOG = Logger.getLogger(DefaultTableSplitUdf.class.getName());
-  
+
   private String entityKind = "dfaultentitykind";
-  
+
   @Override
   public void init(JSONObject jobObj) {
-    
+
     try {
       JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
       entityKind = bqObj.getString(Jobs.BQ_ENTITYKIND);
@@ -32,10 +32,10 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
       LOG.log(Level.INFO, e.getMessage(), e);
     }
   }
-  
+
   @Override
   public final void processTableSplit(GetQueryResultsResponse queryResult) {
-    
+
     TableSchema tableSchema = queryResult.getSchema();
     List<TableFieldSchema> fieldSchema = tableSchema.getFields();
     List<TableRow> rows = queryResult.getRows();
@@ -52,7 +52,7 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
       LOG.log(Level.INFO, "done processing table rows");
     }
   }
-  
+
   /*-
    * This implementation assumes there are three special columns: _kind_, _key_ and _data_
    * __kind : The string value of this column is used as the entity kind
@@ -79,7 +79,7 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
     ringBuffer.store(dataObj);
     ringBuffer.put();
   }
-  
+
   protected final String getEntityKind() {
     return entityKind;
   }
