@@ -1,5 +1,6 @@
 package com.bluelake.datahub.udf;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,20 +53,31 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
     }
   }
   
+  /*-
+   * This implementation assumes there are three special columns: _kind_, _key_ and _data_
+   * __kind : The string value of this column is used as the entity kind
+   * __key : The string value of this column is used as the name of the row key
+   * __data : This string value of this column should be a JSONObject
+   * Any remaining columns are added to the _data_ JSONObject using the column name as the key
+   */
   protected void processTableRow(JSONObject rowObj) throws JSONException {
-    String imei = rowObj.getString("imei");
-    String devicetime = rowObj.getString("devicetime");
-    String event = rowObj.getString("event");
-    RingBufferEntity ringBuffer = new RingBufferEntity(getEntityKind(), imei, 10);
-    try {
-      JSONObject obj = new JSONObject(event);
-      obj.remove("ID");
-      obj.put("devicetime", devicetime);
-      ringBuffer.store(obj);
-      ringBuffer.put();
-    } catch (JSONException je) {
-      LOG.log(Level.SEVERE, je.getMessage(), je);
+    String kind = rowObj.getString("__kind");
+    String key = rowObj.getString("__key");
+    String dataS = rowObj.getString("__data");
+    RingBufferEntity ringBuffer = new RingBufferEntity(kind, key, 10);
+
+    JSONObject dataObj = new JSONObject(dataS);
+    Iterator<?> keys = rowObj.keys();
+
+    while (keys.hasNext()) {
+      String k = (String) keys.next();
+      if (!k.startsWith("__")) {
+        dataObj.put(k, rowObj.get(k));
+      }
     }
+
+    ringBuffer.store(dataObj);
+    ringBuffer.put();
   }
   
   protected final String getEntityKind() {

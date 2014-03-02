@@ -31,9 +31,9 @@ public class BqIngestServlet extends HttpServlet {
       String projectId = bqObj.getString(Jobs.BQ_PROJECTID);
       String jobId = bqObj.getString(Jobs.BQ_JOBID);
       long splitSize = bqObj.getLong(Jobs.BQ_SPLIT);
-      String tableSplitUdfName = bqObj.getString(Jobs.BQ_TABLESPLITUDF);
-      String startIndexS = req.getParameter(DataHubConstants.INGEST_REQUEST_PARAM_STARTINDEX);
 
+
+      String startIndexS = req.getParameter(DataHubConstants.INGEST_REQUEST_PARAM_STARTINDEX);
       if (startIndexS != null) {
         LOG.log(Level.INFO, "startIndex: " + startIndexS);
         LOG.log(Level.INFO, "splitSize: " + splitSize);
@@ -45,6 +45,10 @@ public class BqIngestServlet extends HttpServlet {
                 .setMaxResults(splitSize).execute();
         
         TableSplitUdf tableSplitUdf = null;
+        String tableSplitUdfName = null;
+        if (bqObj.has(Jobs.BQ_TABLESPLITUDF)) {
+          tableSplitUdfName = bqObj.getString(Jobs.BQ_TABLESPLITUDF);
+        }
         if (tableSplitUdfName != null) {
           tableSplitUdf = UdfFactory.getTableSplitUdf(tableSplitUdfName);
         }
@@ -60,23 +64,5 @@ public class BqIngestServlet extends HttpServlet {
       LOG.log(Level.SEVERE, je.getMessage(), je);
     }
   }
-  
-  // load the user defined IngestProcessor
-//IngestProcessor ingestProcessor;
-//try {
-//  GcsClassLoader loader =
-//      new GcsClassLoader(this.getClass().getClassLoader(), "mac-test", "test.jar");
-//  /*
-//   * LOG.log(Level.INFO, "trying out the urlclassloader"); URLClassLoader loader = new
-//   * URLClassLoader(new URL[] {new URL("https://storage.cloud.google.com/mac-test/test.jar")});
-//   */
-//  Class<? extends IngestProcessor> cz =
-//      loader.loadClass("com.bluelake.datahub.test.TestIngestProcessor").asSubclass(
-//          IngestProcessor.class);
-//  ingestProcessor = cz.newInstance();
-//} catch (Exception e) {
-//  LOG.log(Level.SEVERE, "failed to load class, " + e.getMessage(), e);
-//  ingestProcessor = new IngestProcessor();
-//}
 
 }
