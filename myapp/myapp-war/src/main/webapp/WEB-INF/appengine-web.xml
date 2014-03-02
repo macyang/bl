@@ -3,6 +3,11 @@
     <application>blue-lake</application>
     <version>${appengine.app.version}</version>
     <threadsafe>true</threadsafe>
+    <module>default</module>
+    <basic-scaling>
+      <max-instances>20</max-instances>
+      <idle-timeout>10m</idle-timeout>
+    </basic-scaling>
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

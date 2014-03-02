@@ -75,22 +75,22 @@ public class BqIngestServlet extends HttpServlet {
     }
 
     // load the user defined IngestProcessor
-    IngestProcessor ingestProcessor;
-    try {
-      GcsClassLoader loader =
-          new GcsClassLoader(this.getClass().getClassLoader(), "mac-test", "test.jar");
-      /*
-       * LOG.log(Level.INFO, "trying out the urlclassloader"); URLClassLoader loader = new
-       * URLClassLoader(new URL[] {new URL("https://storage.cloud.google.com/mac-test/test.jar")});
-       */
-      Class<? extends IngestProcessor> cz =
-          loader.loadClass("com.bluelake.datamodule.test.TestIngestProcessor").asSubclass(
-              IngestProcessor.class);
-      ingestProcessor = cz.newInstance();
-    } catch (Exception e) {
-      LOG.log(Level.SEVERE, "failed to load class, " + e.getMessage(), e);
-      ingestProcessor = new IngestProcessor();
-    }
+//    IngestProcessor ingestProcessor;
+//    try {
+//      GcsClassLoader loader =
+//          new GcsClassLoader(this.getClass().getClassLoader(), "mac-test", "test.jar");
+//      /*
+//       * LOG.log(Level.INFO, "trying out the urlclassloader"); URLClassLoader loader = new
+//       * URLClassLoader(new URL[] {new URL("https://storage.cloud.google.com/mac-test/test.jar")});
+//       */
+//      Class<? extends IngestProcessor> cz =
+//          loader.loadClass("com.bluelake.datahub.test.TestIngestProcessor").asSubclass(
+//              IngestProcessor.class);
+//      ingestProcessor = cz.newInstance();
+//    } catch (Exception e) {
+//      LOG.log(Level.SEVERE, "failed to load class, " + e.getMessage(), e);
+//      ingestProcessor = new IngestProcessor();
+//    }
 
     List<TableRow> rows = queryResult.getRows();
     if (rows != null) {

@@ -18,22 +18,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-<!--
-  <repositories>
-    <repository>
-      <id>repo</id>
-      <releases>
-	<enabled>true</enabled>
-	<checksumPolicy>ignore</checksumPolicy>
-      </releases>
-      <snapshots>
-	<enabled>false</enabled>
-      </snapshots>
-      <url>file://${basedir}/repo</url>
-    </repository>
-  </repositories>
--->
-
     <dependencies>
         <!-- Compile/runtime dependencies -->
 	<dependency>
