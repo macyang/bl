@@ -22,7 +22,6 @@
         <profile>
             <id>default</id>
             <modules>
-                <module>processor</module>
                 <module>datahub</module>
                 <module>udf</module>
             </modules>
@@ -45,4 +44,8 @@
       <url>file://${project.basedir}/repo</url>
     </repository>
   </repositories>
+
+  <modules>
+    <module>myapp</module>
+  </modules>
 </project>

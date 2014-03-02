@@ -2,7 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
+  <parent>
+    <artifactId>parent</artifactId>
+    <groupId>com.bluelake</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
     <groupId>com.bluelake</groupId>
@@ -22,6 +27,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+<!--
   <repositories>
     <repository>
       <id>repo</id>
@@ -32,9 +38,10 @@
       <snapshots>
 	<enabled>false</enabled>
       </snapshots>
-      <url>file://${project.basedir}/../repo</url>
+      <url>file://${basedir}/repo</url>
     </repository>
   </repositories>
+-->
 
   <dependencies>
     <dependency>
@@ -42,11 +49,6 @@
       <artifactId>google-api-services-pubsub</artifactId>
       <version>v1beta1-rev20140115023459-1.17.0-rc</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-        <groupId>com.bluelake</groupId>
-        <artifactId>processor</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -183,9 +185,6 @@
                             <targetPath>WEB-INF</targetPath>
                         </resource>
                     </webResources>
-<!--
-		    <packagingIncludes>/Users/twqc64/sandbox/pubsub/google-api-services-pubsub-v1beta1-rev20140115023459-1.17.0-rc.jar</packagingIncludes>
--->
                 </configuration>
             </plugin>
 

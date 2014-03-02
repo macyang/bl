@@ -25,7 +25,7 @@ import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.bluelake.datahub.util.GcsClassLoader;
-import com.bluelake.datamodule.processor.IngestProcessor;
+import com.bluelake.datahub.udf.IngestProcessor;
 
 public class IngestServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
@@ -90,7 +90,7 @@ public class IngestServlet extends HttpServlet {
         URLClassLoader loader = new URLClassLoader(new URL[] {new URL("https://storage.cloud.google.com/mac-test/test.jar")});
         */
         Class<? extends IngestProcessor> cz =
-            loader.loadClass("com.bluelake.datamodule.test.TestIngestProcessor").asSubclass(
+            loader.loadClass("com.bluelake.datahub.test.TestIngestProcessor").asSubclass(
                 IngestProcessor.class);
         ingestProcessor = cz.newInstance();
       } catch (Exception e) {

@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import com.bluelake.datahub.udf.TestUdf;
 import com.bluelake.datahub.util.GcsClassLoader;
-import com.bluelake.datamodule.processor.IngestProcessor;
+import com.bluelake.datahub.udf.IngestProcessor;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import com.google.api.services.bigquery.model.TableCell;
@@ -53,7 +53,7 @@ public class BqIngestServlet extends HttpServlet {
   }
 
   private void ingestQueryResultToDS(String projectId, String jobId, String entityKey,
-      String startIndexS, long pageSize) throws IOException {
+      String startIndexS, long splitSize) throws IOException {
     LOG.log(Level.INFO, "start processing");
     LOG.log(Level.INFO, "bq job: " + projectId + "/" + jobId);
     LOG.log(Level.INFO, "startIndex: " + startIndexS);
@@ -63,7 +63,7 @@ public class BqIngestServlet extends HttpServlet {
     GetQueryResultsResponse queryResult =
         bigquery.jobs().getQueryResults(projectId, jobId)
             .setStartIndex(new BigInteger(startIndexS))
-            .setMaxResults(DataModuleConstants.GCS_SPLITSIZE).execute();
+            .setMaxResults(splitSize).execute();
 
     TableSchema tableSchema = queryResult.getSchema();
     List<TableFieldSchema> fieldSchema = tableSchema.getFields();

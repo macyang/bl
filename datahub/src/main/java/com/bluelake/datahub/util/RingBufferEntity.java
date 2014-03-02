@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datahub.util.RingBuffer.RingBufferIterator;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
