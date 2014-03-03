@@ -5,5 +5,10 @@
     "split":1000,
     "splitudf":"com.bluelake.myapp.MyProcessor",
     "entitykind":"myappkind"
-  }
+  },
+  "gcs":{
+  },
+  "pubsub":{
+    "topic":
+  },
 }

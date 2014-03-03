@@ -1,0 +1,10 @@
+{
+  "kind":"bluelake#stream",
+  "pubsub":{
+    "topic":"",
+    "streamudf":"com.bluelake.myapp.MyProcessor",
+    "entitykind":"myappkind"
+  },
+  "servlet":{
+  },
+}

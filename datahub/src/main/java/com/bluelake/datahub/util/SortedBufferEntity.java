@@ -35,7 +35,7 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
 
   /**
    * A SortedBufferEntity can hold a fixed number of properties.
-   * The properties are sorted based on the nature order of the property names.
+   * The sorting is based on the nature order of the property names.
    * The SortedBufferEntity removes properties in ascending order to stay within its capacity.
    * The SortedBufferEntity iterator returns the data in descending order.
    */
