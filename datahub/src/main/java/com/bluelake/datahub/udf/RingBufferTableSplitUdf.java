@@ -16,9 +16,9 @@ import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 
-public class DefaultTableSplitUdf implements TableSplitUdf {
+public class RingBufferTableSplitUdf implements TableSplitUdf {
 
-  private static final Logger LOG = Logger.getLogger(DefaultTableSplitUdf.class.getName());
+  private static final Logger LOG = Logger.getLogger(RingBufferTableSplitUdf.class.getName());
 
   private String entityKind = "dfaultentitykind";
 
@@ -64,6 +64,7 @@ public class DefaultTableSplitUdf implements TableSplitUdf {
     String kind = rowObj.getString("__kind");
     String key = rowObj.getString("__key");
     String dataS = rowObj.getString("__data");
+    
     RingBufferEntity ringBuffer = new RingBufferEntity(kind, key, 10);
 
     JSONObject dataObj = new JSONObject(dataS);

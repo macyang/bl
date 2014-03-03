@@ -5,8 +5,8 @@ import java.util.Iterator;
 import org.json.JSONObject;
 
 public abstract class RingBuffer implements Iterable<JSONObject> {
-  public static final String PROP_NUMSLOTS = "_numslots";
-  public static final String PROP_NEXTSLOT = "_nextslot";
+  public static final String PROP_NUMSLOTS = "__numslots";
+  public static final String PROP_NEXTSLOT = "__nextslot";
   public static final int DEFAULT_SIZE = 30;
   protected int numSlots = 0;
   protected int nextSlot = 0;

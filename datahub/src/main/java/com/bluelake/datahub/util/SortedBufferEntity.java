@@ -19,9 +19,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
 
-public class SortedSlotsEntity implements Iterable<JSONObject> {
-  private static final Logger LOG = Logger.getLogger(SortedSlotsEntity.class.getName());
-  private static final String PROP_NUMSLOTS = "_numslots";
+public class SortedBufferEntity implements Iterable<JSONObject> {
+  private static final Logger LOG = Logger.getLogger(SortedBufferEntity.class.getName());
+  private static final String PROP_NUMSLOTS = "__numslots";
   private static final int MAX_NUMSLOTS = 250;
   private static final int MAX_OVERSIZE = 16;
   private DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
@@ -34,12 +34,12 @@ public class SortedSlotsEntity implements Iterable<JSONObject> {
   private Map<String, Object> cachedProperties = null;
 
   /**
-   * A SortedSlotsEntity can hold a fixed number of properties.
+   * A SortedBufferEntity can hold a fixed number of properties.
    * The properties are sorted based on the nature order of the property names.
-   * The SortedSlotsEntity removes properties in ascending order to stay within its capacity.
-   * The SortedSlotsEntity iterator returns the data in descending order.
+   * The SortedBufferEntity removes properties in ascending order to stay within its capacity.
+   * The SortedBufferEntity iterator returns the data in descending order.
    */
-  public SortedSlotsEntity(String kind, String key, int size) {
+  public SortedBufferEntity(String kind, String key, int size) {
     if (size <= 0) {
       throw new IllegalArgumentException("Number of slots must be greater than zero (requested "
           + size + ")");
@@ -95,7 +95,7 @@ public class SortedSlotsEntity implements Iterable<JSONObject> {
   @Override
   public Iterator<JSONObject> iterator() {
     entity = getOrCreateEntity(kind, key, size);
-    return new SortedSlotsIterator(entity.getProperties());
+    return new SortedBufferIterator(entity.getProperties());
   }
 
   /*
@@ -144,16 +144,22 @@ public class SortedSlotsEntity implements Iterable<JSONObject> {
     return entity;
   }
 
-  class SortedSlotsIterator implements Iterator<JSONObject> {
+  class SortedBufferIterator implements Iterator<JSONObject> {
 
     Map<String, Object> map;
     TreeSet<String> keySet;
     Iterator<String> keyIterator;
     int count = 0;
 
-    SortedSlotsIterator(Map<String, Object> map) {
+    SortedBufferIterator(Map<String, Object> map) {
       this.map = map;
       keySet = new TreeSet<String>(map.keySet());
+      // remove the properties that are used by SortedBufferEntity itself
+      for (String k : keySet) {
+        if (k.startsWith("__")) {
+          keySet.remove(k);
+        }
+      }
       keyIterator = keySet.descendingIterator();
     }
 
@@ -169,7 +175,13 @@ public class SortedSlotsEntity implements Iterable<JSONObject> {
     @Override
     public JSONObject next() {
       String key = keyIterator.next();
-      JSONObject result = (JSONObject) map.get(key);
+      JSONObject result = null;
+      try {
+        Text t = (Text)map.get(key);
+        result = new JSONObject(t.getValue());
+      } catch (JSONException e) {
+        LOG.log(Level.SEVERE, e.getMessage(), e);
+      }
       count++;
       return result;
     }

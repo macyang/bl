@@ -1,0 +1,15 @@
+{
+  "kind":"bluelake#job",
+  "bq":{
+    "query":"
+      SELECT 'sortedtest' as __kind, imei as __key, devicetime as __id, event as __data, devicetime, prod_code
+      FROM table_query([motorola.com:ds-prod:lotus_dev_devicestats], 'REGEXP_MATCH(table_id, r\"2014022\")')
+      WHERE
+	tag = 'BT_DISCHARGE_SUMMARY'
+	and idtag = 'BT_DISCHARGE_SUMMARY'
+	and segid = 'BT_DISCHARGE_SUMMARY'
+    ",
+    "split":1500,
+    "splitudf":"com.bluelake.datahub.udf.SortedBufferTableSplitUdf"
+  }
+}

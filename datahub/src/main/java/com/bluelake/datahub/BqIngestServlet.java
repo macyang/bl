@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datahub.udf.DefaultTableSplitUdf;
+import com.bluelake.datahub.udf.RingBufferTableSplitUdf;
 import com.bluelake.datahub.udf.TableSplitUdf;
 import com.bluelake.datahub.udf.UdfFactory;
 import com.google.api.services.bigquery.Bigquery;
@@ -52,8 +52,9 @@ public class BqIngestServlet extends HttpServlet {
         if (tableSplitUdfName != null) {
           tableSplitUdf = UdfFactory.getTableSplitUdf(tableSplitUdfName);
         }
+        // TODO : add default TableSplitUdf
         if (tableSplitUdf == null) {
-          tableSplitUdf = new DefaultTableSplitUdf();
+          tableSplitUdf = new RingBufferTableSplitUdf();
         }
         tableSplitUdf.init(jobObj);
         tableSplitUdf.processTableSplit(queryResult);

@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.bluelake.datahub.GcpUtil;
 import com.bluelake.datahub.Jobs;
 import com.bluelake.datahub.util.RingBufferEntity;
+import com.bluelake.datahub.util.SortedBufferEntity;
 
 public class APIServlet extends HttpServlet {
   static final long serialVersionUID = 1234567890l;
@@ -33,7 +34,9 @@ public class APIServlet extends HttpServlet {
     String kind = pathElements[1];
     String key = pathElements[2];
 
-    RingBufferEntity entity = new RingBufferEntity(kind, key, 6);
+    // TODO : dynamically switch between different type of entity, some kind of output formatter?
+    // RingBufferEntity entity = new RingBufferEntity(kind, key, 6);
+    SortedBufferEntity entity = new SortedBufferEntity(kind, key, 6);
     JSONArray result = new JSONArray();
     for (JSONObject obj : entity) {
       result.put(obj);

@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluelake.datahub.udf.DefaultTableSplitUdf;
+import com.bluelake.datahub.udf.RingBufferTableSplitUdf;
 import com.bluelake.datahub.util.RingBufferEntity;
 
-public class MyProcessor extends DefaultTableSplitUdf {
+public class MyProcessor extends RingBufferTableSplitUdf {
   private static final Logger LOG = Logger.getLogger(MyProcessor.class.getName());
 
   @Override
