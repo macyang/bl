@@ -34,11 +34,11 @@ public class GcpUtil {
 
   private static String PROJECT_ID = "motorola.com:datasystems";
 
-  public static String getPROJECT_ID() {
+  public static String getProjectId() {
     return PROJECT_ID;
   }
 
-  public static void setPROJECT_ID(String pROJECT_ID) {
+  public static void setProjectId(String pROJECT_ID) {
     PROJECT_ID = pROJECT_ID;
   }
 

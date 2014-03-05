@@ -2,6 +2,7 @@ package com.bluelake.datahub;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,10 +40,23 @@ public class BqIngestServlet extends HttpServlet {
         LOG.log(Level.INFO, "splitSize: " + splitSize);
         
         Bigquery bigquery = GcpUtil.createBQClient();
-        GetQueryResultsResponse queryResult =
-            bigquery.jobs().getQueryResults(projectId, jobId)
-                .setStartIndex(new BigInteger(startIndexS))
-                .setMaxResults(splitSize).execute();
+        GetQueryResultsResponse queryResult;
+        int retries = 3;
+        while (true) {
+          try {
+            queryResult =
+                bigquery.jobs().getQueryResults(projectId, jobId)
+                    .setStartIndex(new BigInteger(startIndexS)).setMaxResults(splitSize)
+                    .execute();
+            break;
+          } catch (SocketTimeoutException e) {
+            LOG.log(Level.WARNING, e.getMessage(), e);
+            if (retries == 0) {
+              throw e;
+            }
+            --retries;
+          }
+        }
         
         TableSplitUdf tableSplitUdf = null;
         String tableSplitUdfName = null;

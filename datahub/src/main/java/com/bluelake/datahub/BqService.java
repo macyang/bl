@@ -16,20 +16,20 @@ import com.google.api.services.bigquery.model.JobConfigurationQuery;
 import com.google.api.services.bigquery.model.JobReference;
 import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableFieldSchema;
+import com.google.api.services.bigquery.model.TableReference;
 import com.google.api.services.bigquery.model.TableRow;
 
 public class BqService {
   static final long serialVersionUID = 1234567890l;
   private static final Logger LOG = Logger.getLogger(BqService.class.getName());
-  
+
   private BqService() {}
 
   /**
    * Inserts a Query Job for a particular query
    */
-  public static JobReference insertJob(JSONObject jobObj)
-      throws JSONException, IOException {
-    
+  public static JobReference insertJob(JSONObject jobObj) throws JSONException, IOException {
+
     LOG.log(Level.INFO, "Inserting Query Job: " + jobObj.toString());
     JSONObject bqObj = jobObj.getJSONObject(Jobs.FIELD_BQ);
     String querySql = bqObj.getString(Jobs.BQ_QUERY);
@@ -37,16 +37,20 @@ public class BqService {
     Job job = new Job();
     JobConfiguration config = new JobConfiguration();
     JobConfigurationQuery queryConfig = new JobConfigurationQuery();
-    config.setQuery(queryConfig);
-
-    job.setConfiguration(config);
+    queryConfig.setAllowLargeResults(true);
+    queryConfig.setDestinationTable(new TableReference().setProjectId(GcpUtil.getProjectId())
+        .setDatasetId("mac").setTableId("tmp"));
+    queryConfig.setWriteDisposition("WRITE_TRUNCATE");
     queryConfig.setQuery(querySql);
+    
+    config.setQuery(queryConfig);
+    job.setConfiguration(config);
 
     Bigquery bigquery = GcpUtil.createBQClient();
-    Insert insert = bigquery.jobs().insert(GcpUtil.getPROJECT_ID(), job);
-    insert.setProjectId(GcpUtil.getPROJECT_ID());
+    Insert insert = bigquery.jobs().insert(GcpUtil.getProjectId(), job);
+    insert.setProjectId(GcpUtil.getProjectId());
     JobReference jobRef = insert.execute().getJobReference();
-    
+
     bqObj.put(Jobs.BQ_PROJECTID, jobRef.getProjectId());
     bqObj.put(Jobs.BQ_JOBID, jobRef.getJobId());
     GcpUtil.createPollJobTask(jobObj, System.currentTimeMillis());
@@ -55,7 +59,7 @@ public class BqService {
 
     return jobRef;
   }
-  
+
   /*
    * Direct mapping from a BigQuery TableRow to a JSONObject. The key name is the column name and
    * the value is the TableCell value casted to String.

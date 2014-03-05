@@ -5,7 +5,7 @@
     <threadsafe>true</threadsafe>
     <module>default</module>
     <basic-scaling>
-      <max-instances>20</max-instances>
+      <max-instances>100</max-instances>
       <idle-timeout>10m</idle-timeout>
     </basic-scaling>
 
