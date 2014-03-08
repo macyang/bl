@@ -1,0 +1,18 @@
+{
+  "kind":"bluelake#job",
+  "bq":{
+    "query":"
+SELECT
+  'loc' as __kind,
+  imei as __key,
+  rectime as __id,
+  event as __data,
+FROM (table_query([motorola.com:ds-prod:lotus_dev_devicestats], 'regexp_match(table_id, r\"20140305\")'))
+WHERE
+  tag CONTAINS 'CONTEXT_ENGINE'
+  AND idtag CONTAINS 'CE_LOCATION'
+    ",
+    "split":1000,
+    "splitudf":"com.bluelake.datahub.udf.SortedBufferTableSplitUdf"
+  }
+}

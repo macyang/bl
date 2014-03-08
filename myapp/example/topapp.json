@@ -1,0 +1,29 @@
+{
+  "kind":"bluelake#job",
+  "bq":{
+    "query":"
+SELECT
+  'app' as __kind,
+  barcode as __key,
+  REGEXP_EXTRACT(event, r'\"record_time\"\:\"(.*?)\"') as __id,
+  DATE(MSEC_TO_TIMESTAMP(REGEXP_EXTRACT(event, r'\"record_time\"\:\"(.*?)\"'))) AS thedate,
+  REGEXP_EXTRACT(event, r'\"record_time\"\:\"(.*?)\"') AS record_time,
+  tag,
+  CASE WHEN segid IN ('appau') THEN 'appPause' WHEN segid IN ('apres') THEN 'appResume' END AS segment,
+  segid,
+  REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') AS application,
+FROM (table_query([motorola.com:ds-prod:lotus_dev_devicestats], 'regexp_match(table_id, r\"20140305_000\")'))
+WHERE
+  segid in("appau", "apres")
+  AND (tag == 'MOT_DEVICE_STATS_L3' || tag == 'MOT_DEVICE_STATS_L2')
+  AND NOT REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') CONTAINS "com.motorola.homescreen"
+  AND NOT REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') CONTAINS "com.motorola.motlauncher"
+  AND NOT REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') CONTAINS "com.android.launcher"
+  AND NOT REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') CONTAINS "com.android.launcher2"
+  AND NOT REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') CONTAINS "com.android.systemui"
+  AND NOT REGEXP_EXTRACT(event, r'\"pkg\"\:\"(.*?)\"') CONTAINS "com.motorola.audiomonitor"
+    ",
+    "split":1000,
+    "splitudf":"com.bluelake.datahub.udf.SortedBufferTableSplitUdf"
+  }
+}

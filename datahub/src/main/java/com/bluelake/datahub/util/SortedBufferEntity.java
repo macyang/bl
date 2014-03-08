@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bluelake.datahub.DataHubConstants;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -32,6 +33,7 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
   private int numSlots;
   private Map<String, JSONObject> dataMap = new HashMap<String, JSONObject>();
   private Map<String, Object> cachedProperties = null;
+  private JSONObject confObj = new JSONObject();
 
   /**
    * A SortedBufferEntity can hold a fixed number of properties.
@@ -51,6 +53,7 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
     this.kind = kind;
     this.key = key;
     this.size = size;
+    confObj.put(DataHubConstants.ENTITY_KIND, this.getClass().getName());
   }
 
   public void put() {

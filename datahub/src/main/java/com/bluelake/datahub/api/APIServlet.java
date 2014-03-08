@@ -34,7 +34,7 @@ public class APIServlet extends HttpServlet {
     String kind = pathElements[1];
     String key = pathElements[2];
 
-    // TODO : dynamically switch between different type of entity, some kind of output formatter?
+    // TODO : dynamically switch between different types of entity, some kind of output formatter?
     // RingBufferEntity entity = new RingBufferEntity(kind, key, 6);
     SortedBufferEntity entity = new SortedBufferEntity(kind, key, 6);
     JSONArray result = new JSONArray();
