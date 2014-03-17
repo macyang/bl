@@ -22,14 +22,13 @@ import com.google.appengine.api.datastore.Transaction;
 
 public class SortedBufferEntity implements Iterable<JSONObject> {
   private static final Logger LOG = Logger.getLogger(SortedBufferEntity.class.getName());
-  private static final String PROP_NUMSLOTS = "__numslots";
+  private static final String PROP_NUMSLOTS = "numslots";
   private static final int MAX_NUMSLOTS = 250;
-  private static final int MAX_OVERSIZE = 16;
+  private static final int MAX_OVERSIZE = 0;
   private DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
   private Entity entity;
   private String kind;
   private String key;
-  private int size;
   private int numSlots;
   private Map<String, JSONObject> dataMap = new HashMap<String, JSONObject>();
   private Map<String, Object> cachedProperties = null;
@@ -52,8 +51,8 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
     }
     this.kind = kind;
     this.key = key;
-    this.size = size;
-    confObj.put(DataHubConstants.ENTITY_KIND, this.getClass().getName());
+    this.numSlots = size;
+
   }
 
   public void put() {
@@ -61,7 +60,7 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
     while (true) {
       Transaction txn = datastoreService.beginTransaction();
       try {
-        entity = getOrCreateEntity(kind, key, size);
+        getOrCreateEntity(kind, key, numSlots);
 
         /*
          * If the number of properties in the entity exceeds the threshold then trim it back down to
@@ -69,10 +68,12 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
          */
         Map<String, Object> currentDataMap = entity.getProperties();
         int currentSize = currentDataMap.keySet().size();
-        if (currentSize > (size + MAX_OVERSIZE)) {
+        numSlots = confObj.getInt(PROP_NUMSLOTS);
+        if (currentSize > (numSlots + MAX_OVERSIZE)) {
           TreeSet<String> keySet = new TreeSet<String>(currentDataMap.keySet());
-          for (int i = 0; i < (currentSize - size); i++) {
+          for (int i = 0; i < (currentSize - numSlots); i++) {
             entity.removeProperty(keySet.pollFirst());
+LOG.log(Level.WARNING, "trim oldest entries");
           }
         }
 
@@ -91,13 +92,15 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
         }
         // Allow retry to occur
         --retries;
+      } catch (JSONException e) {
+        LOG.log(Level.SEVERE, e.getMessage(), e);
       }
     }
   }
 
   @Override
   public Iterator<JSONObject> iterator() {
-    entity = getOrCreateEntity(kind, key, size);
+    getOrCreateEntity(kind, key, numSlots);
     return new SortedBufferIterator(entity.getProperties());
   }
 
@@ -107,7 +110,7 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
    */
   public JSONObject getDataAt(String id) {
     if (cachedProperties == null) {
-      entity = getOrCreateEntity(kind, key, size);
+      getOrCreateEntity(kind, key, numSlots);
       cachedProperties = entity.getProperties();
     }
     try {
@@ -123,28 +126,44 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
     dataMap.put(id, data);
   }
 
-  public String getConf(String key) {
-    return (String) entity.getProperty(key);
-  }
-
-  public void setConf(String k, String v) {
-    entity.setUnindexedProperty(k, v);
-  }
-
   public boolean hasId(String id) {
     return entity.hasProperty(id);
   }
 
-  private Entity getOrCreateEntity(String kind, String key, int size) {
-    Entity entity;
+  private void getOrCreateEntity(String kind, String key, int size) {
+    
     try {
       entity = datastoreService.get(KeyFactory.createKey(kind, key));
+      Text confText = (Text)entity.getProperty(DataHubConstants.PROP_CONF);
+      if (confText != null) {
+        confObj = new JSONObject(confText.getValue());
+      }
+      else {
+        confObj = new JSONObject();
+        try {
+          confObj.put(DataHubConstants.ENTITY_KIND, this.getClass().getName());
+          confObj.put(PROP_NUMSLOTS, size);
+          numSlots = size;
+        } catch (JSONException e1) {
+          LOG.log(Level.SEVERE, e1.getMessage(), e1);
+        }
+      }
     } catch (EntityNotFoundException e) {
       entity = new Entity(kind, key);
-      entity.setUnindexedProperty(PROP_NUMSLOTS, String.valueOf(size));
+      confObj = new JSONObject();
+      try {
+        confObj.put(DataHubConstants.ENTITY_KIND, this.getClass().getName());
+        confObj.put(PROP_NUMSLOTS, size);
+        numSlots = size;
+      } catch (JSONException e1) {
+        LOG.log(Level.SEVERE, e.getMessage(), e);
+      }
+    } catch (JSONException e) {
+      // failed to get the config property from an existing entity
+      LOG.log(Level.SEVERE, e.getMessage(), e);
     }
-    numSlots = Integer.parseInt((String) entity.getProperty(PROP_NUMSLOTS));
-    return entity;
+    entity.setUnindexedProperty(DataHubConstants.PROP_CONF, new Text(confObj.toString()));
+    
   }
 
   class SortedBufferIterator implements Iterator<JSONObject> {
@@ -159,7 +178,7 @@ public class SortedBufferEntity implements Iterable<JSONObject> {
       keySet = new TreeSet<String>(map.keySet());
       // remove the properties that are used by SortedBufferEntity itself
       for (String k : keySet) {
-        if (k.startsWith("__")) {
+        if (k.equals(DataHubConstants.PROP_CONF)) {
           keySet.remove(k);
         }
       }

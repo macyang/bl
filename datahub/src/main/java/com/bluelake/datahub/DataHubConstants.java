@@ -23,6 +23,7 @@ public class DataHubConstants {
   public static final String INGEST_REQUEST_PARAM_JOBID = "jobid";
   public static final String INGEST_REQUEST_PARAM_STARTTIME = "starttime";
   public static final String JOBOBJECT = "jobobj";
+  public static final String PROP_CONF = "blconf";
 
 
 }

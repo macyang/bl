@@ -63,7 +63,7 @@ public class SortedBufferTableSplitUdf implements TableSplitUdf {
     String id = rowObj.getString("__id");
     String dataS = rowObj.getString("__data");
 
-    SortedBufferEntity sortedBuffer = new SortedBufferEntity(kind, key, 10);
+    SortedBufferEntity sortedBuffer = new SortedBufferEntity(kind, key, 3);
 
     JSONObject dataObj = new JSONObject(dataS);
     Iterator<?> keys = rowObj.keys();

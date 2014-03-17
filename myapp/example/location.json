@@ -3,11 +3,11 @@
   "bq":{
     "query":"
 SELECT
-  'loc' as __kind,
+  'loc2' as __kind,
   imei as __key,
   rectime as __id,
   event as __data,
-FROM (table_query([motorola.com:ds-prod:lotus_dev_devicestats], 'regexp_match(table_id, r\"20140305\")'))
+FROM (table_query([motorola.com:ds-prod:lotus_dev_devicestats], 'regexp_match(table_id, r\"20140311\")'))
 WHERE
   tag CONTAINS 'CONTEXT_ENGINE'
   AND idtag CONTAINS 'CE_LOCATION'

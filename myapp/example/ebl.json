@@ -3,7 +3,7 @@
   "bq":{
     "query":"
       SELECT
-	'ebl2' as __kind,
+	'ebl3' as __kind,
 	imei as __key,
 	rectime as __id,
 	'{}' as __data,
@@ -11,7 +11,7 @@
 	ltime,
 	devicetime
       FROM [motorola.com:science-cluster:tmp.ebl_test]
-      -- LIMIT 500000
+      LIMIT 3000
     ",
     "split":1000,
     "splitudf":"com.bluelake.datahub.udf.SortedBufferTableSplitUdf"
