@@ -14,6 +14,7 @@ import com.google.api.services.bigquery.model.Job;
 import com.google.api.services.bigquery.model.JobConfiguration;
 import com.google.api.services.bigquery.model.JobConfigurationQuery;
 import com.google.api.services.bigquery.model.JobReference;
+import com.google.api.services.bigquery.model.Table;
 import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableReference;
@@ -75,6 +76,26 @@ public class BqService {
           fieldSchema.get(i).getName() + ":" + (String) ((TableCell) (fields.get(i))).getV());
     }
     return jsonObj;
+  }
+  
+  public static JSONObject bqTableInfo(String projectId, String datasetId, String tableId) {
+    Bigquery bigquery = GcpUtil.createBQClient();
+    try {
+      Table bqTable = bigquery.tables().get(projectId, datasetId, tableId).execute();
+      JSONObject tableObj = new JSONObject(bqTable.toString());
+      /*
+      tableObj.put("creationTime", bqTable.getCreationTime());
+      tableObj.put("lastModifiedTime", bqTable.getLastModifiedTime());
+      tableObj.put("getNumBytes", bqTable.getNumBytes());
+      tableObj.put("numRows", bqTable.getNumRows());
+      */
+      return tableObj;  
+    } catch (IOException e) {
+      LOG.log(Level.SEVERE, e.getMessage(), e);
+    } catch (JSONException e) {
+      LOG.log(Level.SEVERE, e.getMessage(), e);
+    }
+    return null;
   }
 
 }

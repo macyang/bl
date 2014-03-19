@@ -33,6 +33,7 @@ public class GcpUtil {
   private static final String API_KEY = "AIzaSyBTWoCMTJbGaD3lzGgUAbAYptu-9pmMGlU";
 
   private static String PROJECT_ID = "motorola.com:datasystems";
+  private static Bigquery bigquery = null;
 
   public static String getProjectId() {
     return PROJECT_ID;
@@ -57,12 +58,14 @@ public class GcpUtil {
   }
 
   public static Bigquery createBQClient() {
-    HttpRequestInitializer credential =
-        new AppIdentityCredential(Arrays.asList(new String[] {BIGQUERY_SCOPE}));
-
-    Bigquery bigquery =
-        new Bigquery.Builder(TRANSPORT, JSON_FACTORY, credential).setApplicationName(
-            APPLICATION_NAME).build();
+    
+    if (bigquery == null) {
+      HttpRequestInitializer credential =
+          new AppIdentityCredential(Arrays.asList(new String[] {BIGQUERY_SCOPE}));
+      bigquery =
+          new Bigquery.Builder(TRANSPORT, JSON_FACTORY, credential).setApplicationName(
+              APPLICATION_NAME).build();
+    }
 
     return bigquery;
   }
