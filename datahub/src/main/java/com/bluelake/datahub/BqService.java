@@ -83,12 +83,6 @@ public class BqService {
     try {
       Table bqTable = bigquery.tables().get(projectId, datasetId, tableId).execute();
       JSONObject tableObj = new JSONObject(bqTable.toString());
-      /*
-      tableObj.put("creationTime", bqTable.getCreationTime());
-      tableObj.put("lastModifiedTime", bqTable.getLastModifiedTime());
-      tableObj.put("getNumBytes", bqTable.getNumBytes());
-      tableObj.put("numRows", bqTable.getNumRows());
-      */
       return tableObj;  
     } catch (IOException e) {
       LOG.log(Level.SEVERE, e.getMessage(), e);

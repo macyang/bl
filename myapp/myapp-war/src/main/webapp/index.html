@@ -1,0 +1,94 @@
+<!doctype html>
+<html ng-app="plunker">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>
+    <script src="example.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+<body ng-init="limit='20';">
+
+<header class="navbar navbar-default navbar-static-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" ng-click="isCollapsed = !isCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand visible-xs" href="#">LOTUS</a>
+            </div>
+            <nav class="hidden-xs">
+                <ul class="nav navbar-nav">
+                    <a href="#" role="button" class="navbar-brand">
+                        LOTUS
+                    </a>
+                    <li class="dropdown">
+                        <a href="#" role="button" class="dropdown-toggle">
+                            Directives <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#accordion">Accordion</a></li><li><a href="#alert">Alert</a></li><li><a href="#buttons">Buttons</a></li><li><a href="#carousel">Carousel</a></li><li><a href="#collapse">Collapse</a></li><li><a href="#datepicker">Datepicker</a></li><li><a href="#dropdownToggle">Dropdown Toggle</a></li><li><a href="#modal">Modal</a></li><li><a href="#pagination">Pagination</a></li><li><a href="#popover">Popover</a></li><li><a href="#progressbar">Progressbar</a></li><li><a href="#rating">Rating</a></li><li><a href="#tabs">Tabs</a></li><li><a href="#timepicker">Timepicker</a></li><li><a href="#tooltip">Tooltip</a></li><li><a href="#typeahead">Typeahead</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#getting_started">Getting started</a></li>
+                </ul>
+            </nav>
+            <nav class="visible-xs" collapse="!isCollapsed">
+                <ul class="nav navbar-nav">
+                    <li><a href="#getting_started" ng-click="isCollapsed = !isCollapsed">Getting started</a></li>
+                    <li><a href="#directives_small" ng-click="isCollapsed = !isCollapsed">Directives</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+  <div class="row" ng-controller='PhoneListCtrl'>
+
+    <div class="col-md-3 show-grid">
+      <div>Search: <input ng-model="query"></div>
+      <div>
+      Sort by: <select ng-model="orderProp">
+	       <option value="-checkinTimestamp">Checkin Time</option>
+	       <option value="-multiProperties.fileSize">Checkin Size</option>
+	       <option value="model">Model Name</option>
+      </select>
+      </div>
+      <label class="checkbox">
+	<input type="checkbox" ng-model="oneAtATime">
+	Open only one at a time
+      </label>
+    </div>
+
+    <div class="col-md-6">
+      <accordion close-others="oneAtATime">
+	<accordion-group is-open="isopen" ng-repeat="phone in phones | filter:query | orderBy:orderProp">
+	  <accordion-heading>
+	    <p class="text-primary">{{phone.serialNumber}} &nbsp:&nbsp {{phone.checkinTimestamp | date:'yyyy-MM-dd HH:mm:ss Z'}}
+	    <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
+	    </p>
+	  </accordion-heading>
+	  <a href="{{phone.link}}">{{phone.serialNumber}}</a>
+	  <p>{{phone.checkinTimestamp | date:'yyyy-MM-dd HH:mm:ss Z'}}</p>
+	  <p>Size: {{phone.multiProperties.fileSize}} bytes</p>
+	  <p>{{phone.carrier}}</p>
+	  <p>{{phone.model}}</p>
+	</accordion-group>
+      </accordion>
+    </div>
+
+  </div>
+
+</div>
+
+  </body>
+</html>

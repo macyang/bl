@@ -8,4 +8,5 @@
     </web>
   </module>
   <library-directory>lib</library-directory>
+  <library-directory>js</library-directory>
 </application>
