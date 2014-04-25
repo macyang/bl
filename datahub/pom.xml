@@ -135,6 +135,11 @@
       <version>v2-rev51-1.17.0-rc</version>
     </dependency>
     <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-storage</artifactId>
+      <version>v1beta2-rev43-1.18.0-rc</version>
+    </dependency>
+    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20090211</version>
